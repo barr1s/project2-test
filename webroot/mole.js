@@ -36,8 +36,8 @@ function setGame() {
     }
 
     // Start intervals for mole and plant
-    moleInterval = setInterval(setMole, 1000);
-    plantInterval = setInterval(setPlant, 1100);
+    moleInterval = setInterval(setMole, 989);
+    plantInterval = setInterval(setPlant, 1189);
 }
 
 function getRandomTile() {

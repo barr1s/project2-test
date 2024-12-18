@@ -2,6 +2,7 @@ import './createPost.js';
 
 import { Devvit, useState } from '@devvit/public-api';
 
+
 // Defines the messages that are exchanged between Devvit and Web View
 type WebViewMessage =
   | {
@@ -78,7 +79,8 @@ Devvit.addCustomPostType({
 
     // Render the custom post type
     return (
-      <vstack grow padding="small">
+
+      <vstack grow padding="small" >
         <vstack
           grow={!webviewVisible}
           height={webviewVisible ? '0%' : '100%'}
@@ -97,12 +99,12 @@ Devvit.addCustomPostType({
               </text>
             </hstack>
             <hstack>
-              <text size="medium">CLICK ON THE YELLOW SQUARES AS FAST AS YOU CAN</text>
+              <text size="medium">HIT ON THE YELLOW SQUARES AS FAST AS YOU CAN</text>
               <text size="medium" weight="bold">
               </text>
             </hstack>
             <hstack>
-            <text size="medium">AVOID REDS THEY WILL ADD TO YOUR TIME</text>
+            <text size="medium">MISSING YELLOWS AND HITTING REDS WILL ADD TO YOUR TIME</text>
               <text size="medium" weight="bold">
               </text>
             </hstack>
@@ -110,7 +112,7 @@ Devvit.addCustomPostType({
           <spacer />
           <button onPress={onShowWebviewClick}>PLAY</button>
         </vstack>
-        <vstack grow={webviewVisible} height={webviewVisible ? '100%' : '0%'}>
+        <vstack grow={webviewVisible} height={webviewVisible ? '100%' : '0%'} >
           <vstack border="thick" borderColor="black" height={webviewVisible ? '100%' : '0%'}>
             <webview
               id="myWebView"
