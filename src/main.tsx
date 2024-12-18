@@ -85,22 +85,25 @@ Devvit.addCustomPostType({
           alignment="middle center"
         >
           <text size="xlarge" weight="bold">
-            WACK-A-MOLE
+            WACKAMOLE REACTION GAME
           </text>
           <spacer />
           <vstack alignment="start middle">
             <hstack>
-              <text size="medium">Username:</text>
+              <text size="medium">Username: </text>
               <text size="medium" weight="bold">
                 {' '}
                 {username ?? ''}
               </text>
             </hstack>
             <hstack>
-              <text size="medium">Current counter:</text>
+              <text size="medium">CLICK ON THE YELLOW SQUARES AS FAST AS YOU CAN</text>
               <text size="medium" weight="bold">
-                {' '}
-                {counter ?? ''}
+              </text>
+            </hstack>
+            <hstack>
+            <text size="medium">AVOID REDS THEY WILL ADD TO YOUR TIME</text>
+              <text size="medium" weight="bold">
               </text>
             </hstack>
           </vstack>

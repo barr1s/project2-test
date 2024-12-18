@@ -1,31 +1,22 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta charset="UTF-8" />
-    <title>Web View Example</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="mole.js"></script>
-  </head>
-  <body>
-    <h1>Whack-a-Mole</h1>
-    <h2 id="score">0</h2>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="UTF-8" />
+  <title>WACKAMOLE</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="mole.js"></script>
+</head>
+<body>
+  <h1>WACKAMOLE</h1>
 
-    <div id="board"></div>
-    <div id="controls"></div>
-
-    
-    <h3>Your username is <span id="username">Guest</span></h3>
-    <h3>Current counter is at: <span id="counter">0</span></h3>
-    <div class="button-container">
-      <button id="btn-increase">Increase Counter ⬆️</button>
-      <button id="btn-decrease">Decrease Counter ⬇️</button>
-    </div>
-    <h3>Last message from Devvit blocks:</h3>
-    <pre id="messageOutput"></pre>
-    <script type="application/javascript" src="script.js"></script>
-  </body>
+  <div id="controls">
+    <div id="score">0</div>
+    <div id="timer">30.000</div>
+    <div id="board" class="game-board"></div>
+    <div id="username" style="display:none;">YourUsername</div>
+    <div id="high-score">High Score: N/A</div>
+  </div>
+  <script type="application/javascript" src="script.js"></script>
+</body>
 </html>

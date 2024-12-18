@@ -1,13 +1,19 @@
 let currentMoleTile;
 let currentPlantTile;
-let score = 0;
+let moleClickTimes = []; // To store reaction times for each mole click
+let totalTime = 0; // Total time including penalties
+let successfulClicks = 0; // Number of successful mole clicks
 let gameOver = false;
 
 let moleInterval; // Variable to store the mole interval
 let plantInterval; // Variable to store the plant interval
 
+// Get high score from localStorage
+let highScore = localStorage.getItem("highScore") || null;
+
 document.addEventListener("DOMContentLoaded", () => {
     setGame();
+    updateHighScoreDisplay();
 });
 
 function setGame() {
@@ -15,9 +21,12 @@ function setGame() {
     clearIntervals();
 
     document.getElementById("board").innerHTML = ""; // Clear the board
-    document.getElementById("score").innerText = score.toString(); // Reset score display
+    document.getElementById("score").innerText = "Count: 0"; // Reset score display
+    document.getElementById("timer").innerText = "0.000"; // Reset timer display
     gameOver = false;
-    score = 0;
+    totalTime = 0;
+    moleClickTimes = [];
+    successfulClicks = 0;
 
     for (let i = 0; i < 9; i++) {
         let tile = document.createElement("div");
@@ -26,9 +35,9 @@ function setGame() {
         document.getElementById("board").appendChild(tile);
     }
 
-    // Start new intervals
-    moleInterval = setInterval(setMole, 1100);
-    plantInterval = setInterval(setPlant, 1900);
+    // Start intervals for mole and plant
+    moleInterval = setInterval(setMole, 1000);
+    plantInterval = setInterval(setPlant, 1100);
 }
 
 function getRandomTile() {
@@ -37,12 +46,10 @@ function getRandomTile() {
 }
 
 function setMole() {
-    if (gameOver) {
-        return;
-    }
+    if (gameOver) return;
 
     if (currentMoleTile && currentMoleTile.querySelector(".mole")) {
-        currentMoleTile.innerHTML = "";
+        currentMoleTile.innerHTML = ""; // Clear the previous mole
     }
 
     let mole = document.createElement("img");
@@ -50,20 +57,23 @@ function setMole() {
     mole.classList.add("mole");
 
     let num = getRandomTile();
+
+    // Prevent mole from spawning on the same tile as a plant
     if (currentPlantTile && currentPlantTile.id === num) {
         return;
     }
+
     currentMoleTile = document.getElementById(num);
     currentMoleTile.appendChild(mole);
+
+    mole.startTime = Date.now(); // Record the time mole appears
 }
 
 function setPlant() {
-    if (gameOver) {
-        return;
-    }
+    if (gameOver) return;
 
     if (currentPlantTile && currentPlantTile.querySelector("img")) {
-        currentPlantTile.innerHTML = "";
+        currentPlantTile.innerHTML = ""; // Clear the previous plant
     }
 
     let plant = document.createElement("img");
@@ -73,36 +83,104 @@ function setPlant() {
     if (currentMoleTile && currentMoleTile.id === num) {
         return;
     }
+
     currentPlantTile = document.getElementById(num);
     currentPlantTile.appendChild(plant);
 }
 
 function selectTile() {
-    if (gameOver) {
-        return;
-    }
+    if (gameOver) return;
 
-    // If clicking on the Monty Mole
     if (this === currentMoleTile) {
         const mole = currentMoleTile.querySelector(".mole");
         if (mole) {
-            mole.src = "./images/pow.png"; // Change image to pow.png
-            mole.classList.remove("mole"); // Remove the mole class to prevent conflicts with spawning
+            let reactionTime = Date.now() - mole.startTime; // Calculate reaction time
+            moleClickTimes.push(reactionTime);
+            totalTime += reactionTime / 1000; // Convert to seconds
+            successfulClicks += 1;
+
+            mole.src = "./images/pow.png";
+            mole.classList.remove("mole");
+            mole.classList.add("pow");
             setTimeout(() => {
                 if (this.querySelector("img")?.src.includes("pow.png")) {
                     this.innerHTML = "";
                 }
-            }, 500);
+            }, 100);
+
+            // Play the mole click sound
+            new Audio('./sounds/hitmarker_2.mp3').play();
+
+            document.getElementById("score").innerText = `Count: ${successfulClicks}`;
+            if (successfulClicks === 10) {
+                endGame();
+            }
+
+            // Update the live timer
+            if (!gameOver) {
+                updateTimer();
+            }
+        }
+    } else if (this === currentPlantTile) {
+        totalTime += 1; // Add a 1-second penalty
+
+        // Play the plant click sound
+        new Audio('./sounds/vine-boom.mp3').play();
+
+        // Apply the "pow" effect to the plant
+        const plant = currentPlantTile.querySelector("img");
+        if (plant) {
+            plant.src = "./images/pow.png";
+            plant.classList.add("pow");
+            setTimeout(() => {
+                if (this.querySelector("img")?.src.includes("pow.png")) {
+                    this.innerHTML = "";
+                }
+            }, 100);
         }
 
-        score += 1;
-        document.getElementById("score").innerText = score.toString();
+        // Update the live timer
+        if (!gameOver) {
+            updateTimer();
+        }
     }
-    // If clicking on the Piranha Plant
-    else if (this === currentPlantTile) {
-        gameOver = true;
-        document.getElementById("score").innerText = "GAME OVER: " + score.toString();
-        showTryAgainButton();
+}
+
+function updateTimer() {
+    if (gameOver) return;
+
+    // Update the timer display
+    document.getElementById("timer").innerText = totalTime.toFixed(3);
+}
+
+function endGame() {
+    gameOver = true;
+    clearIntervals();
+
+    // Final time calculation
+    let finalTime = totalTime.toFixed(3); // Total time including penalties
+    document.getElementById("score").innerText = `Final Time: ${finalTime} seconds`;
+
+    // Check for high score and update if necessary
+    if (!highScore || totalTime < highScore) {
+        highScore = totalTime;
+        localStorage.setItem("highScore", highScore.toFixed(3)); // Save the new high score
+    }
+
+    // Ensure no further updates to the timer
+    document.getElementById("timer").innerText = finalTime;
+
+    // Update high score display
+    updateHighScoreDisplay();
+
+    showTryAgainButton();
+}
+
+function updateHighScoreDisplay() {
+    if (highScore) {
+        document.getElementById("high-score").innerText = `Fastest Time: ${highScore} seconds`;
+    } else {
+        document.getElementById("high-score").innerText = "Fastest Time: N/A";
     }
 }
 
@@ -121,14 +199,11 @@ function showTryAgainButton() {
 }
 
 function resetGame() {
-    // Remove the Try Again button
     const button = document.getElementById("try-again");
     if (button) {
         button.remove();
     }
 
-    // Reset game variables and UI
-    score = 0;
     currentMoleTile = null;
     currentPlantTile = null;
 
@@ -136,7 +211,6 @@ function resetGame() {
 }
 
 function clearIntervals() {
-    // Clear the existing intervals
     clearInterval(moleInterval);
     clearInterval(plantInterval);
 }

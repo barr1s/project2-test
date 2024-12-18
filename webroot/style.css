@@ -10,7 +10,6 @@
 body {
   text-align: center;
   display: flex;
-  background: url("./images/mario-bg.jpg");
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
@@ -119,19 +118,20 @@ pre {
 #board {
   width: 200px;
   height: 200px;
-  background-color: green;
+  background-color: black;
 
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap; 
 
-  background: url("./images/soil.png");
   background-size: cover;
   border: 3px solid white;
   border-radius: 10px;
 }
 
 #board div {
+  position: relative;
+  
   width: 66.67px;
   height: 66.67px;
   background-image: url("./images/pipe.png");
@@ -141,11 +141,28 @@ pre {
 #board div img {
   width: 40px;
   height: 40px;
+
+  position: absolute; /* Position the image relative to the div */
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%);
   
+  height: auto;
+
   user-select: none;
   -moz-user-select: none;
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -ms-user-select: none;
 
+}
+
+.mole {
+  position: relative;
+  z-index: 1;
+}
+
+.pow {
+  position: center;
+  z-index: 2;
 }
